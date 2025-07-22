@@ -26,15 +26,29 @@ export default function RootLayout({
         <Script
           id="adsense-consent"
           strategy="beforeInteractive"
-          src="https://fundingchoicesmessages.google.com/i/pub-5144766807318748?ers=1"
-          async
+          dangerouslySetInnerHTML={{
+            __html: `(function() {
+              var src = "https://fundingchoicesmessages.google.com/i/pub-5144766807318748?ers=1";
+              var script = document.createElement("script");
+              script.src = src;
+              script.async = true;
+              document.head.appendChild(script);
+            })();`,
+          }}
         />
         <Script
           id="adsense-script"
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5144766807318748"
-          crossOrigin="anonymous"
           strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function() {
+              var src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5144766807318748";
+              var script = document.createElement("script");
+              script.src = src;
+              script.async = true;
+              script.crossOrigin = "anonymous";
+              document.head.appendChild(script);
+            })();`,
+          }}
         />
       </head>
       <body className="font-body antialiased">
