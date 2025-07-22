@@ -7,6 +7,7 @@ import Script from 'next/script';
 export const metadata: Metadata = {
   title: 'Fútbol Stats Zone',
   description: 'Your daily hub for football match statistics and schedules.',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
