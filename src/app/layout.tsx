@@ -23,33 +23,8 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet"></link>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#121212" />
-        <Script
-          id="adsense-consent"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function() {
-              var src = "https://fundingchoicesmessages.google.com/i/pub-5144766807318748?ers=1";
-              var script = document.createElement("script");
-              script.src = src;
-              script.async = true;
-              document.head.appendChild(script);
-            })();`,
-          }}
-        />
-        <Script
-          id="adsense-script"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function() {
-              var src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5144766807318748";
-              var script = document.createElement("script");
-              script.src = src;
-              script.async = true;
-              script.crossOrigin = "anonymous";
-              document.head.appendChild(script);
-            })();`,
-          }}
-        />
+        <script async src="https://fundingchoicesmessages.google.com/i/pub-5144766807318748?ers=1"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5144766807318748" crossOrigin="anonymous"></script>
       </head>
       <body className="font-body antialiased">
         {children}
