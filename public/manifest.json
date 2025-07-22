@@ -1,6 +1,6 @@
 {
   "name": "Fútbol Stats Zone",
-  "short_name": "Fútbol Stats",
+  "short_name": "Stats Zone",
   "description": "Your daily hub for football match statistics and schedules.",
   "start_url": "/",
   "display": "standalone",
