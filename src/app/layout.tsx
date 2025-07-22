@@ -22,6 +22,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet"></link>
         <Script
+          id="adsense-consent"
+          strategy="beforeInteractive"
+          src="https://fundingchoicesmessages.google.com/i/pub-5144766807318748?ers=1"
+          async
+        />
+        <Script
+          id="adsense-script"
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5144766807318748"
           crossOrigin="anonymous"
