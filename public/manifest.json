@@ -19,5 +19,5 @@
   "background_color": "#121212",
   "start_url": "/",
   "display": "standalone",
-  "scope": "/"
+  "orientation": "portrait"
 }
