@@ -19,8 +19,8 @@ export function AdBanner() {
       <ins 
         className="adsbygoogle"
         style={{ display: 'block', width: '100%', height: '90px' }}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // <-- REEMPLAZA ESTO con tu ID de editor
-        data-ad-slot="YYYYYYYYYY" // <-- REEMPLAZA ESTO con tu ID de bloque de anuncios
+        data-ad-client="ca-pub-5144766807318748"
+        data-ad-slot="YYYYYYYYYY"
         data-ad-format="auto"
         data-full-width-responsive="true"
       ></ins>
