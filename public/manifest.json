@@ -1,8 +1,11 @@
-
 {
   "name": "Fútbol Stats Zone",
   "short_name": "Fútbol Stats",
   "description": "Your daily hub for football match statistics and schedules.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#3D5AFE",
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -14,10 +17,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "theme_color": "#121212",
-  "background_color": "#121212",
-  "start_url": "/",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }
