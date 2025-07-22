@@ -23,8 +23,8 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet"></link>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#121212" />
-        <script async src="https://fundingchoicesmessages.google.com/i/pub-5144766807318748?ers=1"></script>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5144766807318748" crossOrigin="anonymous"></script>
+        <Script async src="https://fundingchoicesmessages.google.com/i/pub-5144766807318748?ers=1" strategy="beforeInteractive"></Script>
+        <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5144766807318748" crossOrigin="anonymous" strategy="beforeInteractive"></Script>
       </head>
       <body className="font-body antialiased">
         {children}
