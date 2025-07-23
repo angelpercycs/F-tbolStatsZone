@@ -159,7 +159,7 @@ export async function getMatchesByDate(startDate, endDate) {
                 matchday,
                 team1:teams!matches_team1_id_fkey(id, name),
                 team2:teams!matches_team2_id_fkey(id, name),
-                league:leagues(id, name, country_id, countries(id, name))
+                league:leagues!inner(id, name, country_id, countries(id, name))
             `)
             .gte('match_date', startDate)
             .lte('match_date', endDate)
@@ -240,4 +240,5 @@ export async function getMatchesByDate(startDate, endDate) {
     
 
     
+
 
