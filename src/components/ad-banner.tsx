@@ -1,17 +1,6 @@
-
 "use client";
 
-import { useEffect } from 'react';
-
 export function AdBanner() {
-  useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
   return (
     <div className="my-6 flex justify-center items-center w-full min-h-[90px] bg-muted/30 rounded-lg overflow-hidden">
       <ins 
