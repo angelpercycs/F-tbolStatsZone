@@ -8,7 +8,7 @@ export function AdBanner() {
         className="adsbygoogle"
         style={{ display: 'block', width: '100%', height: '90px' }}
         data-ad-client="ca-pub-5144766807318748"
-        data-ad-slot="YYYYYYYYYY"
+        data-ad-slot="4349475283"
         data-ad-format="auto"
         data-full-width-responsive="true"
       ></ins>
