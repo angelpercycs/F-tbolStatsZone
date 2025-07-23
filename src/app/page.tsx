@@ -1,4 +1,3 @@
-
 "use client";
 
 import { DailyMatches } from "@/components/daily-matches";
@@ -29,7 +28,7 @@ export default function Home() {
         <div className="container mx-auto p-4 sm:p-6 lg:p-8">
           <AdBanner />
           <Tabs defaultValue="daily" className="w-full">
-            <TabsList className="mb-4 grid w-full grid-cols-1 sm:grid-cols-3">
+            <TabsList className="mb-4 grid w-full grid-cols-3">
               <TabsTrigger value="daily">Encuentros del día</TabsTrigger>
               <TabsTrigger value="date">Por Fecha</TabsTrigger>
               <TabsTrigger value="round">Por Liga</TabsTrigger>
