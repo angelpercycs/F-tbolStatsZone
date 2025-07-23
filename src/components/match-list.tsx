@@ -143,23 +143,32 @@ export const MatchList = ({ matches, error, loading }) => {
   const groupedByLeague = matches.reduce((acc, match) => {
     const leagueName = match.league?.name || 'Unknown League';
     if (!acc[leagueName]) {
-      acc[leagueName] = [];
+      acc[leagueName] = {
+        matches: [],
+        country: match.league?.countries?.name || 'Unknown Country'
+      };
     }
-    acc[leagueName].push(match);
+    acc[leagueName].matches.push(match);
     return acc;
   }, {});
 
-  const sortedLeagues = Object.entries(groupedByLeague).sort(([a], [b]) => a.localeCompare(b));
+  const sortedLeagues = Object.entries(groupedByLeague).sort(([leagueA, dataA]: [string, any], [leagueB, dataB]: [string, any]) => {
+    const countryCompare = dataA.country.localeCompare(dataB.country);
+    if (countryCompare !== 0) {
+      return countryCompare;
+    }
+    return leagueA.localeCompare(leagueB);
+  });
 
   return (
     <>
       <div className="w-full space-y-4 mt-4">
-        {sortedLeagues.map(([leagueName, leagueMatches]) => {
+        {sortedLeagues.map(([leagueName, { matches: leagueMatches, country }]: [string, any]) => {
           return (
             <Card key={leagueName}>
               <CardContent className="p-0">
                 <div className="p-4 font-bold flex items-center gap-2 border-b bg-muted/20">
-                  <Flag className="h-5 w-5"/> {leagueName}
+                  <Flag className="h-5 w-5"/> {country} - {leagueName}
                 </div>
                 <div>
                   <div className="border-b last:border-b-0">

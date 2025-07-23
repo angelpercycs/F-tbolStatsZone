@@ -5,22 +5,38 @@ import { supabase } from '@/lib/supabase';
 import { getMatchPrediction } from '@/ai/flows/get-match-prediction-flow';
 import type { MatchPredictionOutput } from '@/ai/schemas/match-prediction-schemas';
 
-let leaguesCache = null;
+let leaguesCache: any[] | null = null;
+let leaguesMapCache: { [key: string]: any } | null = null;
 
 async function getLeagues() {
-    if (leaguesCache) {
-        return leaguesCache;
+    if (leaguesMapCache) {
+        return leaguesMapCache;
     }
-    const { data: leagues, error } = await supabase.from('leagues').select('id, name');
+
+    const { data: allLeagues, error } = await supabase
+        .from('leagues')
+        .select(`
+            id,
+            name,
+            country_id,
+            countries (
+                id,
+                name
+            )
+        `);
+
     if (error) {
-        console.error('Error fetching leagues:', error);
+        console.error('Error fetching leagues with countries:', error);
         return {};
     }
-    const leagueMap = leagues.reduce((acc, league) => {
+
+    leaguesCache = allLeagues;
+    const leagueMap = allLeagues.reduce((acc, league) => {
         acc[league.id] = league;
         return acc;
     }, {});
-    leaguesCache = leagueMap;
+    
+    leaguesMapCache = leagueMap;
     return leagueMap;
 }
 
@@ -181,7 +197,6 @@ export async function getMatchesByDate(startDate, endDate) {
             `)
             .gte('match_date', startDate)
             .lte('match_date', endDate)
-            .order('league_id', { ascending: true })
             .order('match_date', { ascending: true });
 
         if (matchesError) {
@@ -197,7 +212,7 @@ export async function getMatchesByDate(startDate, endDate) {
 
         const matchesWithLeagues = matchesData.map(match => ({
             ...match,
-            league: leaguesMap[match.league_id] || { name: match.league_id }
+            league: leaguesMap[match.league_id] || { name: match.league_id, countries: { name: 'Unknown' } }
         }));
 
 
