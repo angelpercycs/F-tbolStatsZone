@@ -63,7 +63,7 @@ export async function getRoundsForLeague(leagueId: string, season: string) {
 }
 
 export async function getMatchesByRound(leagueId: string, season: string, round: string) {
-     const { data: roundMatches, error } = await supabase
+    const { data: roundMatches, error } = await supabase
         .from('matches')
         .select('match_date')
         .eq('league_id', leagueId)
@@ -72,25 +72,37 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
         .order('match_date', { ascending: false });
 
     if (error || !roundMatches || roundMatches.length === 0) {
-        console.error('Could not determine date range for round', error);
+        console.error('Could not find matches for the selected round', error);
         return { data: [], error: "No se encontraron partidos para la jornada seleccionada." };
     }
-    
-    const dates = roundMatches.map(m => new Date(m.match_date).getTime());
+
+    const { data: matchesData, error: matchesError } = await supabase
+        .from('matches')
+        .select(`*, match_date_iso:match_date`)
+        .eq('league_id', leagueId)
+        .eq('season', season)
+        .eq('matchday', round)
+        .order('match_date', { ascending: true });
+
+    if (matchesError) {
+        return { data: null, error: `Error de Supabase al buscar partidos: ${matchesError.message}` };
+    }
+
+    const dates = matchesData.map(m => new Date(m.match_date).getTime());
     const minDate = new Date(Math.min(...dates));
     const maxDate = new Date(Math.max(...dates));
-
+    
     minDate.setUTCHours(0, 0, 0, 0);
     maxDate.setUTCHours(23, 59, 59, 999);
 
     const result = await getMatchesByDate(minDate.toISOString(), maxDate.toISOString());
 
     if (result.error) return result;
-
+    
     const filteredMatches = result.data.filter((m: any) => 
         m.league_id.toString() === leagueId.toString() && 
         m.season.toString() === season.toString() && 
-        m.matchday.toString() === round.toString()
+        m.matchday && m.matchday.toString() === round.toString()
     );
     
     return { data: filteredMatches, error: null };
