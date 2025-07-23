@@ -216,8 +216,7 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
                 team2_score,
                 matchday,
                 team1:teams!matches_team1_id_fkey(id, name),
-                team2:teams!matches_team2_id_fkey(id, name),
-                league:leagues!inner(id, name, countries(id, name))
+                team2:teams!matches_team2_id_fkey(id, name)
             `)
             .eq('league_id', leagueId)
             .eq('season', season)
@@ -297,6 +296,7 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
 }
 
     
+
 
 
 

@@ -71,7 +71,7 @@ const StandingsTable = ({ title, homeStats, awayStats, homeName, awayName }) => 
 };
 
 
-const PredictionDisplay = ({ prediction }) => {
+const PredictionDisplay = ({ prediction, leagueId }) => {
   if (!prediction || !prediction.has_prediction) return null;
 
   const renderPredictionText = () => {
@@ -140,43 +140,29 @@ export const MatchList = ({ matches, error, loading }) => {
     );
   }
 
-  const groupedByCountry = matches.reduce((acc, match) => {
-    if (!match.league || !match.league.countries) {
-      return acc;
+  const groupedByLeague = matches.reduce((acc, match) => {
+    const leagueId = match.league_id || 'Unknown League';
+    if (!acc[leagueId]) {
+      acc[leagueId] = [];
     }
-    const countryName = match.league.countries.name;
-    if (!acc[countryName]) {
-      acc[countryName] = [];
-    }
-    acc[countryName].push(match);
+    acc[leagueId].push(match);
     return acc;
   }, {});
 
-  const sortedCountries = Object.entries(groupedByCountry).sort(([a], [b]) => a.localeCompare(b));
+  const sortedLeagues = Object.entries(groupedByLeague).sort(([a], [b]) => a.localeCompare(b));
 
   return (
     <>
       <div className="w-full space-y-4 mt-4">
-        {sortedCountries.map(([countryName, countryMatches]) => {
-          const groupedByLeague = countryMatches.reduce((acc, match) => {
-            const leagueName = match.league.name;
-              if (!acc[leagueName]) {
-              acc[leagueName] = [];
-            }
-            acc[leagueName].push(match);
-            return acc;
-          }, {});
-
+        {sortedLeagues.map(([leagueId, leagueMatches]) => {
           return (
-            <Card key={countryName}>
+            <Card key={leagueId}>
               <CardContent className="p-0">
                 <div className="p-4 font-bold flex items-center gap-2 border-b bg-muted/20">
-                  <Flag className="h-5 w-5"/> {countryName}
+                  <Flag className="h-5 w-5"/> {leagueId}
                 </div>
                 <div>
-                {Object.entries(groupedByLeague).map(([leagueName, leagueMatches]) => (
-                  <div key={leagueName} className="border-b last:border-b-0">
-                    <h4 className="p-3 text-sm font-semibold text-muted-foreground">{leagueName}</h4>
+                  <div className="border-b last:border-b-0">
                     {leagueMatches.map((match, index) => {
                         const timeDisplay = match.match_date_iso 
                             ? match.match_date_iso.split('T')[1].substring(0, 5) 
@@ -213,7 +199,6 @@ export const MatchList = ({ matches, error, loading }) => {
                         </div>
                     )})}
                   </div>
-                ))}
                 </div>
               </CardContent>
             </Card>
@@ -227,7 +212,7 @@ export const MatchList = ({ matches, error, loading }) => {
               <SheetHeader className="text-center">
                 <SheetTitle>{selectedMatch.team1?.name} vs {selectedMatch.team2?.name}</SheetTitle>
                 <SheetDescription>
-                    {selectedMatch.league?.name}
+                    {selectedMatch.league_id}
                     <br />
                     <span className="font-semibold">Todas las estadísticas son Pre-Jornada</span>
                     <br />
@@ -235,7 +220,7 @@ export const MatchList = ({ matches, error, loading }) => {
                 </SheetDescription>
               </SheetHeader>
               <div className="p-4">
-                <PredictionDisplay prediction={selectedMatch.prediction} />
+                <PredictionDisplay prediction={selectedMatch.prediction} leagueId={selectedMatch.league_id} />
                   <StandingsTable 
                   title="Clasificación General"
                   homeStats={selectedMatch.team1_standings}
