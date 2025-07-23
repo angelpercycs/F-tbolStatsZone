@@ -32,7 +32,7 @@ export default function Home() {
             <TabsList className="mb-4 grid w-full grid-cols-3">
               <TabsTrigger value="daily">Encuentros del día</TabsTrigger>
               <TabsTrigger value="date">Por Fecha</TabsTrigger>
-              <TabsTrigger value="round">Por Jornada</TabsTrigger>
+              <TabsTrigger value="round">Por Liga</TabsTrigger>
             </TabsList>
             <TabsContent value="daily">
               <DailyMatches />
