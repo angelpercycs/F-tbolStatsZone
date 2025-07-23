@@ -141,11 +141,11 @@ export const MatchList = ({ matches, error, loading }) => {
   }
 
   const groupedByLeague = matches.reduce((acc, match) => {
-    const leagueId = match.league_id || 'Unknown League';
-    if (!acc[leagueId]) {
-      acc[leagueId] = [];
+    const leagueName = match.league?.name || 'Unknown League';
+    if (!acc[leagueName]) {
+      acc[leagueName] = [];
     }
-    acc[leagueId].push(match);
+    acc[leagueName].push(match);
     return acc;
   }, {});
 
@@ -154,12 +154,12 @@ export const MatchList = ({ matches, error, loading }) => {
   return (
     <>
       <div className="w-full space-y-4 mt-4">
-        {sortedLeagues.map(([leagueId, leagueMatches]) => {
+        {sortedLeagues.map(([leagueName, leagueMatches]) => {
           return (
-            <Card key={leagueId}>
+            <Card key={leagueName}>
               <CardContent className="p-0">
                 <div className="p-4 font-bold flex items-center gap-2 border-b bg-muted/20">
-                  <Flag className="h-5 w-5"/> {leagueId}
+                  <Flag className="h-5 w-5"/> {leagueName}
                 </div>
                 <div>
                   <div className="border-b last:border-b-0">
@@ -212,7 +212,7 @@ export const MatchList = ({ matches, error, loading }) => {
               <SheetHeader className="text-center">
                 <SheetTitle>{selectedMatch.team1?.name} vs {selectedMatch.team2?.name}</SheetTitle>
                 <SheetDescription>
-                    {selectedMatch.league_id}
+                    {selectedMatch.league?.name}
                     <br />
                     <span className="font-semibold">Todas las estadísticas son Pre-Jornada</span>
                     <br />
@@ -257,3 +257,5 @@ export const MatchList = ({ matches, error, loading }) => {
     </>
   );
 };
+
+    

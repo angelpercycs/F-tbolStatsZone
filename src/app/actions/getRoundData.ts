@@ -4,6 +4,25 @@ import { supabase } from '@/lib/supabase';
 import { getMatchPrediction } from '@/ai/flows/get-match-prediction-flow';
 import type { MatchPredictionOutput } from '@/ai/schemas/match-prediction-schemas';
 
+let leaguesCache = null;
+
+async function getLeagues() {
+    if (leaguesCache) {
+        return leaguesCache;
+    }
+    const { data: leagues, error } = await supabase.from('leagues').select('id, name');
+    if (error) {
+        console.error('Error fetching leagues:', error);
+        return {};
+    }
+    const leagueMap = leagues.reduce((acc, league) => {
+        acc[league.id] = league;
+        return acc;
+    }, {});
+    leaguesCache = leagueMap;
+    return leagueMap;
+}
+
 async function getTeamStandings(teamId, season, league_id, matchDate) {
     if (!teamId || !season || !league_id) return null;
     const { data: allMatches, error: matchesError } = await supabase
@@ -231,8 +250,16 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
         if (!matchesData || matchesData.length === 0) {
             return { data: [], error: null };
         }
+        
+        const leaguesMap = await getLeagues();
+        
+        const matchesWithLeagues = matchesData.map(match => ({
+            ...match,
+            league: leaguesMap[match.league_id] || { name: match.league_id }
+        }));
 
-        const statsPromises = matchesData.map(match => {
+
+        const statsPromises = matchesWithLeagues.map(match => {
             if (!match.team1_id || !match.team2_id || !match.season || !match.league_id) {
                 return Promise.resolve({ ...match, prediction: { has_prediction: false } });
             }
@@ -300,3 +327,6 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
 
 
 
+
+
+    
