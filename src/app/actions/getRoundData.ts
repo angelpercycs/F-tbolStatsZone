@@ -204,7 +204,21 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
     try {
         const { data: matchesData, error: matchesError } = await supabase
             .from('matches')
-            .select(`*, match_date_iso:match_date, team1:teams(id, name), team2:teams(id, name), league:leagues!inner(id, name, countries(id, name))`)
+            .select(`
+                id,
+                match_date,
+                match_date_iso:match_date,
+                team1_id,
+                team2_id,
+                league_id,
+                season,
+                team1_score,
+                team2_score,
+                matchday,
+                team1:teams!matches_team1_id_fkey(id, name),
+                team2:teams!matches_team2_id_fkey(id, name),
+                league:leagues!inner(id, name, countries(id, name))
+            `)
             .eq('league_id', leagueId)
             .eq('season', season)
             .eq('matchday', round)

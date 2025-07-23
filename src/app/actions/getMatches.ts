@@ -146,7 +146,21 @@ export async function getMatchesByDate(startDate, endDate) {
     try {
         const { data: matchesData, error: matchesError } = await supabase
             .from('matches')
-            .select(`*, match_date_iso:match_date`)
+            .select(`
+                id,
+                match_date,
+                match_date_iso:match_date,
+                team1_id,
+                team2_id,
+                league_id,
+                season,
+                team1_score,
+                team2_score,
+                matchday,
+                team1:teams!matches_team1_id_fkey(id, name),
+                team2:teams!matches_team2_id_fkey(id, name),
+                league:leagues(id, name, country_id, countries(id, name))
+            `)
             .gte('match_date', startDate)
             .lte('match_date', endDate)
             .order('league_id', { ascending: true })
@@ -161,31 +175,7 @@ export async function getMatchesByDate(startDate, endDate) {
             return { data: [], error: null };
         }
 
-        const teamIds = [...new Set(matchesData.flatMap(m => [m.team1_id, m.team2_id]).filter(Boolean))];
-        const leagueIds = [...new Set(matchesData.map(m => m.league_id).filter(Boolean))];
-        
-        const { data: teamsData, error: teamsError } = await supabase.from('teams').select('id, name').in('id', teamIds);
-        if (teamsError) return { data: null, error: `Error de Supabase al buscar equipos: ${teamsError.message}` };
-        
-        const { data: leaguesData, error: leaguesError } = await supabase.from('leagues').select('id, name, country_id').in('id', leagueIds);
-        if (leaguesError) return { data: null, error: `Error de Supabase al buscar ligas: ${leaguesError.message}` };
-        
-        const countryIds = [...new Set(leaguesData.map(l => l.country_id).filter(Boolean))];
-        const { data: countriesData, error: countriesError } = await supabase.from('countries').select('id, name').in('id', countryIds);
-        if (countriesError) return { data: null, error: `Error de Supabase al buscar países: ${countriesError.message}` };
-        
-        const teamsMap = new Map(teamsData.map(t => [t.id, t]));
-        const countriesMap = new Map(countriesData.map(c => [c.id, c]));
-        const leaguesMap = new Map(leaguesData.map(l => [l.id, { ...l, countries: countriesMap.get(l.country_id) }]));
-
-        const combinedData = matchesData.map(match => ({
-            ...match,
-            team1: teamsMap.get(match.team1_id),
-            team2: teamsMap.get(match.team2_id),
-            league: leaguesMap.get(match.league_id),
-        }));
-
-        const statsPromises = combinedData.map(match => {
+        const statsPromises = matchesData.map(match => {
             if (!match.team1_id || !match.team2_id || !match.season || !match.league_id) {
                 return Promise.resolve({ ...match, prediction: { has_prediction: false } });
             }
