@@ -272,5 +272,3 @@ export const MatchList = ({ matches, error, loading }) => {
     </>
   );
 };
-
-    
