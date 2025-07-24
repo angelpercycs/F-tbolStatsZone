@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <rect width="100" height="100" rx="20" fill="hsl(240, 5%, 7%)" />
-  <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Inter, sans-serif" font-size="40" font-weight="900" fill="hsl(229, 99%, 62%)">
-    FSZ
-  </text>
+<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M14 27C21.1797 27 27 21.1797 27 14C27 6.8203 21.1797 1 14 1C6.8203 1 1 6.8203 1 14C1 21.1797 6.8203 27 14 27Z" fill="#121212" stroke="#A7C4FF" stroke-width="2"/>
+<path d="M9.16992 7.7002H18.8399" stroke="#A7C4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.16992 7.7002V14.0002" stroke="#A7C4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.8401 20.3008H9.17011L18.8401 14.0008H9.17011" stroke="#A7C4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
