@@ -313,16 +313,21 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
                 team2Last3Data?.homeAway;
 
             if (allDataAvailable) {
-                prediction = await getMatchPrediction({
-                    team1Name: match.team1.name,
-                    team2Name: match.team2.name,
-                    team1_standings: team1Standings,
-                    team2_standings: team2Standings,
-                    team1_last_3: team1Last3Data.all,
-                    team2_last_3: team2Last3Data.all,
-                    team1_last_3_home_away: team1Last3Data.homeAway,
-                    team2_last_3_home_away: team2Last3Data.homeAway,
-                });
+                 try {
+                    prediction = await getMatchPrediction({
+                        team1Name: match.team1.name,
+                        team2Name: match.team2.name,
+                        team1_standings: team1Standings,
+                        team2_standings: team2Standings,
+                        team1_last_3: team1Last3Data.all,
+                        team2_last_3: team2Last3Data.all,
+                        team1_last_3_home_away: team1Last3Data.homeAway,
+                        team2_last_3_home_away: team2Last3Data.homeAway,
+                    });
+                } catch(e) {
+                    console.error('Error getting match prediction', e);
+                    // Keep prediction as has_prediction: false
+                }
             }
 
             enrichedMatches.push({
