@@ -7,11 +7,9 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'zod';
 import type { 
     MatchPredictionInput,
-    MatchPredictionOutput,
-    StandingsSchema
+    MatchPredictionOutput
 } from '@/ai/schemas/match-prediction-schemas';
 import {
     MatchPredictionInputSchema, 
@@ -33,58 +31,39 @@ const getMatchPredictionFlow = ai.defineFlow(
   },
   async (input) => {
     
-    const checkWinnerConditions = (
-        overall: z.infer<typeof StandingsSchema>,
-        last3: z.infer<typeof StandingsSchema>,
-        last3HomeAway: z.infer<typeof StandingsSchema>,
-        homeAwayStandings: z.infer<typeof StandingsSchema>
+    const checkWinnerCondition = (
+        overall, 
+        last3, 
+        last3HomeAway, 
+        homeAwayStandings
     ) => {
-        // Condition 0: Handle division by zero for played games
+        if (!overall || !last3 || !last3HomeAway || !homeAwayStandings) return false;
         if (overall.played === 0 || homeAwayStandings.played === 0) return false;
 
-        // Condition 1: Mínimo de Partidos Jugados
-        if (overall.played < 9) return false;
-
-        // Condition 2: Buena Defensa Reciente (General)
-        if (last3.goalsAgainst >= 3) return false;
+        const meetsMinPlayed = overall.played >= 9;
+        const goodRecentDefense = last3.goalsAgainst < 3;
+        const goodRecentAttack = last3.goalsFor > 2;
+        const goodHomeAwayStreak = last3HomeAway.goalsAgainst < 3 && last3HomeAway.goalsFor > 2;
+        const solidWinRate = (overall.won / overall.played) * 100 > 45;
+        const fewVenueLosses = (homeAwayStandings.lost / homeAwayStandings.played) * 100 < 35;
         
-        // Condition 3: Buen Ataque Reciente (General)
-        if (last3.goalsFor <= 2) return false;
-
-        // Condition 4: Buena Racha como Local/Visitante (Defensa y Ataque)
-        if (last3HomeAway.goalsAgainst >= 3 || last3HomeAway.goalsFor <= 2) return false;
-        
-        // Condition 5: Porcentaje de Victorias Sólido (General)
-        if ((overall.won / overall.played) * 100 <= 45) return false;
-
-        // Condition 6: Pocas Derrotas como Local/Visitante
-        if ((homeAwayStandings.lost / homeAwayStandings.played) * 100 >= 35) return false;
-
-        // Condition 7: Balance de goles positivo en general
-        if (overall.goalsFor <= overall.goalsAgainst) return false;
-
-        // Condition 8: Racha positiva reciente como Local/Visitante
-        if (last3HomeAway.won <= last3HomeAway.lost) return false;
-        
-        // Si todas las condiciones se cumplen
-        return true;
+        return meetsMinPlayed && goodRecentDefense && goodRecentAttack && goodHomeAwayStreak && solidWinRate && fewVenueLosses;
     };
     
-    const team1IsPotentialWinner = checkWinnerConditions(
-        input.team1_standings,
+    const team1IsPotentialWinner = checkWinnerCondition(
+        input.team1_standings, 
         input.team1_last_3,
         input.team1_last_3_home_away,
-        input.team1_standings.home || input.team1_standings
+        input.team1_standings?.home
     );
 
-    const team2IsPotentialWinner = checkWinnerConditions(
+    const team2IsPotentialWinner = checkWinnerCondition(
         input.team2_standings,
         input.team2_last_3,
         input.team2_last_3_home_away,
-        input.team2_standings.away || input.team2_standings
+        input.team2_standings?.away
     );
 
-    // Si solo uno de los dos equipos cumple
     if (team1IsPotentialWinner && !team2IsPotentialWinner) {
         return {
             has_prediction: true,
@@ -103,7 +82,6 @@ const getMatchPredictionFlow = ai.defineFlow(
         };
     }
 
-    // Si ambos o ninguno cumplen, no hay predicción
     return {
         has_prediction: false,
     };

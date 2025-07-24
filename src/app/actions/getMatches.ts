@@ -1,4 +1,3 @@
-
 // @ts-nocheck
 'use server';
 import { supabase } from '@/lib/supabase';
@@ -241,11 +240,21 @@ export async function getMatchesByDate(startDate, endDate) {
         
         const enrichedMatches = [];
         for (const { match, team1Standings, team2Standings, team1Last3Data, team2Last3Data } of allStats) {
-            let prediction: MatchPredictionOutput = { has_prediction: false };
-            
-            if (match.team1 && match.team2 && team1Standings && team2Standings && team1Last3Data?.all && team2Last3Data?.all && team1Last3Data?.homeAway && team2Last3Data?.homeAway) {
+             let prediction: MatchPredictionOutput = { has_prediction: false };
+
+            const allDataAvailable = 
+                match.team1 && 
+                match.team2 && 
+                team1Standings && 
+                team2Standings && 
+                team1Last3Data?.all && 
+                team2Last3Data?.all && 
+                team1Last3Data?.homeAway && 
+                team2Last3Data?.homeAway;
+
+            if (allDataAvailable) {
                 try {
-                     prediction = await getMatchPrediction({
+                    prediction = await getMatchPrediction({
                         team1Name: match.team1.name,
                         team2Name: match.team2.name,
                         team1_standings: team1Standings,
@@ -255,8 +264,9 @@ export async function getMatchesByDate(startDate, endDate) {
                         team1_last_3_home_away: team1Last3Data.homeAway,
                         team2_last_3_home_away: team2Last3Data.homeAway,
                     });
-                } catch (e) {
-                    console.error("Error getting match prediction", e);
+                } catch(e) {
+                    console.error('Error getting match prediction', e);
+                    // Keep prediction as has_prediction: false
                 }
             }
 

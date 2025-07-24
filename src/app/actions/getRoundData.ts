@@ -227,8 +227,8 @@ export async function getRoundsForLeague(leagueId: string, season: string) {
     }
 
     const uniqueRounds = [...new Set(data.map(match => match.matchday).filter(Boolean))].sort((a,b) => {
-        const numA = parseInt(a.toString().match(/\d+/)?.[0] || '0');
-        const numB = parseInt(b.toString().match(/\d+/)?.[0] || '0');
+        const numA = parseInt(a.toString().replace( /^\D+/g, ''));
+        const numB = parseInt(b.toString().replace( /^\D+/g, ''));
         return numA - numB;
     });
 
@@ -302,9 +302,19 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
         for (const { match, team1Standings, team2Standings, team1Last3Data, team2Last3Data } of allStats) {
             let prediction: MatchPredictionOutput = { has_prediction: false };
             
-            if (match.team1 && match.team2 && team1Standings && team2Standings && team1Last3Data?.all && team2Last3Data?.all && team1Last3Data?.homeAway && team2Last3Data?.homeAway) {
-                try {
-                     prediction = await getMatchPrediction({
+            const allDataAvailable = 
+                match.team1 && 
+                match.team2 && 
+                team1Standings && 
+                team2Standings && 
+                team1Last3Data?.all && 
+                team2Last3Data?.all && 
+                team1Last3Data?.homeAway && 
+                team2Last3Data?.homeAway;
+
+            if (allDataAvailable) {
+                 try {
+                    prediction = await getMatchPrediction({
                         team1Name: match.team1.name,
                         team2Name: match.team2.name,
                         team1_standings: team1Standings,
@@ -314,8 +324,9 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
                         team1_last_3_home_away: team1Last3Data.homeAway,
                         team2_last_3_home_away: team2Last3Data.homeAway,
                     });
-                } catch (e) {
-                    console.error("Error getting match prediction", e);
+                } catch(e) {
+                    console.error('Error getting match prediction', e);
+                    // Keep prediction as has_prediction: false
                 }
             }
 
@@ -337,12 +348,3 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
         return { data: null, error: `An unexpected error occurred: ${e.message}` };
     }
 }
-
-    
-
-
-
-
-
-
-    

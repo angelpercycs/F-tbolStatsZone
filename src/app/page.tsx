@@ -4,8 +4,8 @@ import { DailyMatches } from "@/components/daily-matches";
 import { DateMatches } from "@/components/date-matches";
 import { RoundMatches } from "@/components/round-matches";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Goal } from 'lucide-react';
 import { AdBanner } from "@/components/ad-banner";
+import Image from "next/image";
 
 export default function Home() {
 
@@ -16,7 +16,7 @@ export default function Home() {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <Goal className="h-6 w-6 text-primary" />
+                <Image src="/icon.svg" alt="Fútbol Stats Zone Logo" width={28} height={28} className="h-7 w-7" />
                 <span className="text-xl font-bold text-accent-foreground/90">Fútbol Stats Zone</span>
               </div>
             </div>

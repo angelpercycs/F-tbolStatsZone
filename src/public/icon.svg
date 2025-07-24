@@ -1,0 +1,8 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M32 0C14.327 0 0 14.327 0 32C0 49.673 14.327 64 32 64C49.673 64 64 49.673 64 32C64 14.327 49.673 0 32 0Z" fill="hsl(var(--primary))"/>
+<path d="M43.684 49.721C46.331 47.785 48.618 45.33 50.407 42.492L38.404 38.086L43.684 49.721Z" fill="hsl(var(--primary-foreground))"/>
+<path d="M20.316 49.721C17.669 47.785 15.382 45.33 13.593 42.492L25.596 38.086L20.316 49.721Z" fill="hsl(var(--primary-foreground))"/>
+<path d="M52.882 25.074C52.125 22.388 51.05 19.866 49.697 17.575L36.316 25.074H52.882Z" fill="hsl(var(--primary-foreground))"/>
+<path d="M11.118 25.074C11.875 22.388 12.95 19.866 14.303 17.575L27.684 25.074H11.118Z" fill="hsl(var(--primary-foreground))"/>
+<path d="M32 11.2C30.291 11.2 28.618 11.528 27.025 12.12L29.316 21.074H34.684L36.975 12.12C35.382 11.528 33.709 11.2 32 11.2Z" fill="hsl(var(--primary-foreground))"/>
+</svg>

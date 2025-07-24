@@ -7,7 +7,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Flag, AlertCircle, Lightbulb } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Progress } from "@/components/ui/progress";
 
@@ -159,6 +158,13 @@ export const MatchList = ({ matches, error, loading }) => {
     }
     return leagueA.localeCompare(leagueB);
   });
+  
+  const BlinkingLight = () => (
+    <div className="relative flex h-3 w-3 mx-2">
+      <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></div>
+      <div className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></div>
+    </div>
+  );
 
   return (
     <>
@@ -171,42 +177,46 @@ export const MatchList = ({ matches, error, loading }) => {
                   <Flag className="h-5 w-5"/> {country} - {leagueName}
                 </div>
                 <div>
-                  <div className="border-b last:border-b-0">
-                    {leagueMatches.map((match, index) => {
+                  <div className="divide-y">
+                    {leagueMatches.map((match) => {
                         const timeDisplay = match.match_date_iso 
-                            ? match.match_date_iso.split('T')[1].substring(0, 5) 
+                            ? new Date(match.match_date_iso).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })
                             : '--:--';
+                        
+                        const hasPrediction = match.prediction?.has_prediction;
+                        const winnerIsTeam1 = hasPrediction && match.prediction.winner_name === match.team1.name;
+                        const winnerIsTeam2 = hasPrediction && match.prediction.winner_name === match.team2.name;
 
                         return (
-                        <div key={match.id}>
-                          <div className="flex items-center justify-between w-full px-4 py-4">
-                            <div className="flex items-center gap-4 text-sm">
-                              <div className="w-16 text-muted-foreground text-center">{timeDisplay}</div>
-                              <div className="flex flex-col items-start">
-                                <button onClick={() => handleTeamClick(match)} className="text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" disabled={!match.team1_standings}>
-                                  <span>{match.team1?.name ?? 'Equipo no encontrado'}</span>
-                                </button>
-                                <button onClick={() => handleTeamClick(match)} className="text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" disabled={!match.team2_standings}>
-                                  <span>{match.team2?.name ?? 'Equipo no encontrado'}</span>
-                                </button>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-4 text-sm font-bold">
-                                {match.prediction?.has_prediction && (
-                                    <div className="relative flex h-3 w-3">
-                                        <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></div>
-                                        <div className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></div>
-                                    </div>
-                                )}
-                                <div className="flex flex-col items-center">
-                                    <span>{match.team1_score ?? '-'}</span>
-                                    <span>{match.team2_score ?? '-'}</span>
+                          <div key={match.id} className="flex items-center w-full px-4 py-3">
+                            <div className="w-16 text-muted-foreground text-center text-sm">{timeDisplay}</div>
+                            <div className="flex-grow space-y-1 text-sm">
+                                <div className="flex justify-between items-center">
+                                    <button 
+                                      onClick={() => handleTeamClick(match)} 
+                                      className="flex-grow text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline flex items-center" 
+                                      disabled={!match.team1_standings}
+                                    >
+                                        <span>{match.team1?.name ?? 'Equipo no encontrado'}</span>
+                                        {winnerIsTeam1 && <BlinkingLight />}
+                                    </button>
+                                    <span className="font-bold w-6 text-center">{match.team1_score ?? '-'}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <button 
+                                      onClick={() => handleTeamClick(match)} 
+                                      className="flex-grow text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline flex items-center" 
+                                      disabled={!match.team2_standings}
+                                    >
+                                        <span>{match.team2?.name ?? 'Equipo no encontrado'}</span>
+                                        {winnerIsTeam2 && <BlinkingLight />}
+                                    </button>
+                                    <span className="font-bold w-6 text-center">{match.team2_score ?? '-'}</span>
                                 </div>
                             </div>
                           </div>
-                          {index < leagueMatches.length -1 && <Separator />}
-                        </div>
-                    )})}
+                        )
+                    })}
                   </div>
                 </div>
               </CardContent>
@@ -215,7 +225,7 @@ export const MatchList = ({ matches, error, loading }) => {
         })}
       </div>
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetContent className="w-full max-w-[90vw] sm:max-w-lg overflow-y-auto">
+        <SheetContent className="w-full max-w-[90vw] sm:max-w-xl overflow-y-auto">
           {selectedMatch && (
             <>
               <SheetHeader className="text-center">
@@ -266,5 +276,3 @@ export const MatchList = ({ matches, error, loading }) => {
     </>
   );
 };
-
-    
