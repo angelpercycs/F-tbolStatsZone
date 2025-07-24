@@ -174,28 +174,34 @@ export const MatchList = ({ matches, error, loading }) => {
                   <div className="divide-y">
                     {leagueMatches.map((match) => {
                         const timeDisplay = match.match_date_iso 
-                            ? match.match_date_iso.split('T')[1].substring(0, 5) 
+                            ? new Date(match.match_date_iso).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })
                             : '--:--';
 
                         return (
                           <div key={match.id} className="flex items-center justify-between w-full px-4 py-3">
                               <div className="flex items-center gap-4 text-sm w-full">
+                                  {match.prediction?.has_prediction && (
+                                    <div className="relative flex h-3 w-3">
+                                        <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></div>
+                                        <div className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></div>
+                                    </div>
+                                  )}
                                   <div className="w-16 text-muted-foreground text-center">{timeDisplay}</div>
-                                  <div className="flex-grow">
+                                  <div className="flex-grow space-y-1">
                                       <div className="flex justify-between items-center">
                                           <button 
                                             onClick={() => handleTeamClick(match)} 
-                                            className="text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" 
+                                            className="flex-grow text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" 
                                             disabled={!match.team1_standings}
                                           >
                                               <span>{match.team1?.name ?? 'Equipo no encontrado'}</span>
                                           </button>
                                           <span className="font-bold w-6 text-center">{match.team1_score ?? '-'}</span>
                                       </div>
-                                      <div className="flex justify-between items-center mt-1">
+                                      <div className="flex justify-between items-center">
                                           <button 
                                             onClick={() => handleTeamClick(match)} 
-                                            className="text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" 
+                                            className="flex-grow text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" 
                                             disabled={!match.team2_standings}
                                           >
                                               <span>{match.team2?.name ?? 'Equipo no encontrado'}</span>
@@ -204,12 +210,6 @@ export const MatchList = ({ matches, error, loading }) => {
                                       </div>
                                   </div>
                               </div>
-                              {match.prediction?.has_prediction && (
-                                  <div className="relative flex h-3 w-3 ml-4">
-                                      <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></div>
-                                      <div className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></div>
-                                  </div>
-                              )}
                           </div>
                         )
                     })}

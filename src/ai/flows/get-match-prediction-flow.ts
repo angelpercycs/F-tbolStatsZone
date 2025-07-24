@@ -31,17 +31,39 @@ const getMatchPredictionFlow = ai.defineFlow(
   },
   async (input) => {
     
-    // Simplified diagnostic check
-    const checkWinnerCondition = (standings) => {
-        if (!standings || standings.played === 0) return false;
-        const winPercentage = (standings.won / standings.played) * 100;
-        return winPercentage > 40;
+    const checkWinnerCondition = (
+        overall, 
+        last3, 
+        last3HomeAway, 
+        homeAwayStandings
+    ) => {
+        if (!overall || !last3 || !last3HomeAway || !homeAwayStandings) return false;
+        if (overall.played === 0 || homeAwayStandings.played === 0) return false;
+
+        const meetsMinPlayed = overall.played >= 9;
+        const goodRecentDefense = last3.goalsAgainst < 3;
+        const goodRecentAttack = last3.goalsFor > 2;
+        const goodHomeAwayStreak = last3HomeAway.goalsAgainst < 3 && last3HomeAway.goalsFor > 2;
+        const solidWinRate = (overall.won / overall.played) * 100 > 45;
+        const fewVenueLosses = (homeAwayStandings.lost / homeAwayStandings.played) * 100 < 35;
+        
+        return meetsMinPlayed && goodRecentDefense && goodRecentAttack && goodHomeAwayStreak && solidWinRate && fewVenueLosses;
     };
     
-    const team1IsPotentialWinner = checkWinnerCondition(input.team1_standings);
-    const team2IsPotentialWinner = checkWinnerCondition(input.team2_standings);
+    const team1IsPotentialWinner = checkWinnerCondition(
+        input.team1_standings, 
+        input.team1_last_3,
+        input.team1_last_3_home_away,
+        input.team1_standings?.home
+    );
 
-    // If only one of the two teams meets the simplified condition
+    const team2IsPotentialWinner = checkWinnerCondition(
+        input.team2_standings,
+        input.team2_last_3,
+        input.team2_last_3_home_away,
+        input.team2_standings?.away
+    );
+
     if (team1IsPotentialWinner && !team2IsPotentialWinner) {
         return {
             has_prediction: true,
@@ -60,10 +82,8 @@ const getMatchPredictionFlow = ai.defineFlow(
         };
     }
 
-    // If both or neither meet the condition, no prediction
     return {
         has_prediction: false,
     };
   }
 );
-
