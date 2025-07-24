@@ -302,21 +302,27 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
         for (const { match, team1Standings, team2Standings, team1Last3Data, team2Last3Data } of allStats) {
             let prediction: MatchPredictionOutput = { has_prediction: false };
             
-            if (match.team1 && match.team2 && team1Standings && team2Standings && team1Last3Data?.all && team2Last3Data?.all && team1Last3Data?.homeAway && team2Last3Data?.homeAway) {
-                try {
-                     prediction = await getMatchPrediction({
-                        team1Name: match.team1.name,
-                        team2Name: match.team2.name,
-                        team1_standings: team1Standings,
-                        team2_standings: team2Standings,
-                        team1_last_3: team1Last3Data.all,
-                        team2_last_3: team2Last3Data.all,
-                        team1_last_3_home_away: team1Last3Data.homeAway,
-                        team2_last_3_home_away: team2Last3Data.homeAway,
-                    });
-                } catch (e) {
-                    console.error("Error getting match prediction", e);
-                }
+            const allDataAvailable = 
+                match.team1 && 
+                match.team2 && 
+                team1Standings && 
+                team2Standings && 
+                team1Last3Data?.all && 
+                team2Last3Data?.all && 
+                team1Last3Data?.homeAway && 
+                team2Last3Data?.homeAway;
+
+            if (allDataAvailable) {
+                prediction = await getMatchPrediction({
+                    team1Name: match.team1.name,
+                    team2Name: match.team2.name,
+                    team1_standings: team1Standings,
+                    team2_standings: team2Standings,
+                    team1_last_3: team1Last3Data.all,
+                    team2_last_3: team2Last3Data.all,
+                    team1_last_3_home_away: team1Last3Data.homeAway,
+                    team2_last_3_home_away: team2Last3Data.homeAway,
+                });
             }
 
             enrichedMatches.push({
