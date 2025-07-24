@@ -227,8 +227,8 @@ export async function getRoundsForLeague(leagueId: string, season: string) {
     }
 
     const uniqueRounds = [...new Set(data.map(match => match.matchday).filter(Boolean))].sort((a,b) => {
-        const numA = parseInt(a.toString().match(/\d+/)?.[0] || '0');
-        const numB = parseInt(b.toString().match(/\d+/)?.[0] || '0');
+        const numA = parseInt(a.toString().replace( /^\D+/g, ''));
+        const numB = parseInt(b.toString().replace( /^\D+/g, ''));
         return numA - numB;
     });
 
