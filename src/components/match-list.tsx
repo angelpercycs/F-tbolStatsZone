@@ -171,42 +171,48 @@ export const MatchList = ({ matches, error, loading }) => {
                   <Flag className="h-5 w-5"/> {country} - {leagueName}
                 </div>
                 <div>
-                  <div className="border-b last:border-b-0">
-                    {leagueMatches.map((match, index) => {
+                  <div className="divide-y">
+                    {leagueMatches.map((match) => {
                         const timeDisplay = match.match_date_iso 
                             ? match.match_date_iso.split('T')[1].substring(0, 5) 
                             : '--:--';
 
                         return (
-                        <div key={match.id}>
-                          <div className="flex items-center justify-between w-full px-4 py-4">
-                            <div className="flex items-center gap-4 text-sm">
-                              <div className="w-16 text-muted-foreground text-center">{timeDisplay}</div>
-                              <div className="flex flex-col items-start">
-                                <button onClick={() => handleTeamClick(match)} className="text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" disabled={!match.team1_standings}>
-                                  <span>{match.team1?.name ?? 'Equipo no encontrado'}</span>
-                                </button>
-                                <button onClick={() => handleTeamClick(match)} className="text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" disabled={!match.team2_standings}>
-                                  <span>{match.team2?.name ?? 'Equipo no encontrado'}</span>
-                                </button>
+                          <div key={match.id} className="flex items-center justify-between w-full px-4 py-3">
+                              <div className="flex items-center gap-4 text-sm w-full">
+                                  <div className="w-16 text-muted-foreground text-center">{timeDisplay}</div>
+                                  <div className="flex-grow">
+                                      <div className="flex justify-between items-center">
+                                          <button 
+                                            onClick={() => handleTeamClick(match)} 
+                                            className="text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" 
+                                            disabled={!match.team1_standings}
+                                          >
+                                              <span>{match.team1?.name ?? 'Equipo no encontrado'}</span>
+                                          </button>
+                                          <span className="font-bold w-6 text-center">{match.team1_score ?? '-'}</span>
+                                      </div>
+                                      <div className="flex justify-between items-center mt-1">
+                                          <button 
+                                            onClick={() => handleTeamClick(match)} 
+                                            className="text-left cursor-pointer hover:underline disabled:cursor-not-allowed disabled:no-underline" 
+                                            disabled={!match.team2_standings}
+                                          >
+                                              <span>{match.team2?.name ?? 'Equipo no encontrado'}</span>
+                                          </button>
+                                          <span className="font-bold w-6 text-center">{match.team2_score ?? '-'}</span>
+                                      </div>
+                                  </div>
                               </div>
-                            </div>
-                            <div className="flex items-center gap-4 text-sm font-bold">
-                                {match.prediction?.has_prediction && (
-                                    <div className="relative flex h-3 w-3">
-                                        <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></div>
-                                        <div className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></div>
-                                    </div>
-                                )}
-                                <div className="flex flex-col items-center">
-                                    <span>{match.team1_score ?? '-'}</span>
-                                    <span>{match.team2_score ?? '-'}</span>
-                                </div>
-                            </div>
+                              {match.prediction?.has_prediction && (
+                                  <div className="relative flex h-3 w-3 ml-4">
+                                      <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></div>
+                                      <div className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></div>
+                                  </div>
+                              )}
                           </div>
-                          {index < leagueMatches.length -1 && <Separator />}
-                        </div>
-                    )})}
+                        )
+                    })}
                   </div>
                 </div>
               </CardContent>
