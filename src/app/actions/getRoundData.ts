@@ -177,62 +177,77 @@ async function getLastNMatchesStandings(teamId, season, league_id, isHome, match
 
 
 export async function getCountries() {
-    const { data, error } = await supabase
-        .from('countries')
-        .select('id, name')
-        .order('name', { ascending: true });
+    try {
+        const { data, error } = await supabase
+            .from('countries')
+            .select('id, name')
+            .order('name', { ascending: true });
 
-    if (error) {
-        console.error('Error fetching countries:', error);
-        return { data: null, error: `Error de Supabase: ${error.message}` };
+        if (error) {
+            console.error('Error fetching countries:', error);
+            return { data: null, error: `Error de Supabase: ${error.message}` };
+        }
+        return { data, error: null };
+    } catch (e: any) {
+        console.error('Unexpected error in getCountries:', e);
+        return { data: null, error: `An unexpected error occurred: ${e.message}` };
     }
-    return { data, error: null };
 }
 
 export async function getLeaguesByCountry(countryId: string) {
-    const { data, error } = await supabase
-        .from('leagues')
-        .select('id, name, season')
-        .eq('country_id', countryId)
-        .order('name', { ascending: true });
-    
-    if (error) {
-        console.error('Error fetching leagues:', error);
-        return { data: null, error: `Error de Supabase: ${error.message}` };
+    try {
+        const { data, error } = await supabase
+            .from('leagues')
+            .select('id, name, season')
+            .eq('country_id', countryId)
+            .order('name', { ascending: true });
+        
+        if (error) {
+            console.error('Error fetching leagues:', error);
+            return { data: null, error: `Error de Supabase: ${error.message}` };
+        }
+
+        const leaguesWithSeasons = data.map(league => {
+            return {
+                id: `${league.id}-${league.season}`,
+                name: `${league.name} (${league.season})`,
+                league_id: league.id,
+                season: league.season
+            };
+        });
+
+        return { data: leaguesWithSeasons, error: null };
+    } catch (e: any) {
+        console.error('Unexpected error in getLeaguesByCountry:', e);
+        return { data: null, error: `An unexpected error occurred: ${e.message}` };
     }
-
-    const leaguesWithSeasons = data.map(league => {
-        return {
-            id: `${league.id}-${league.season}`,
-            name: `${league.name} (${league.season})`,
-            league_id: league.id,
-            season: league.season
-        };
-    });
-
-    return { data: leaguesWithSeasons, error: null };
 }
 
 export async function getRoundsForLeague(leagueId: string, season: string) {
-    const { data, error } = await supabase
-        .from('matches')
-        .select('matchday')
-        .eq('league_id', leagueId)
-        .eq('season', season)
-        .order('matchday', { ascending: true });
+    try {
+        const { data, error } = await supabase
+            .from('matches')
+            .select('matchday')
+            .eq('league_id', leagueId)
+            .eq('season', season)
+            .order('matchday', { ascending: true });
 
-    if (error) {
-        console.error('Error fetching rounds:', error);
-        return { data: null, error: `Error de Supabase: ${error.message}` };
+        if (error) {
+            console.error('Error fetching rounds:', error);
+            return { data: null, error: `Error de Supabase: ${error.message}` };
+        }
+
+        const uniqueRounds = [...new Set(data.map(match => match.matchday).filter(Boolean))].sort((a,b) => {
+            const numA = parseInt(a.toString().replace( /^\D+/g, ''));
+            const numB = parseInt(b.toString().replace( /^\D+/g, ''));
+            return numA - numB;
+        });
+
+        return { data: uniqueRounds, error: null };
+    } catch (e: any) {
+        console.error('Unexpected error in getRoundsForLeague:', e);
+        return { data: null, error: `An unexpected error occurred: ${e.message}` };
     }
-
-    const uniqueRounds = [...new Set(data.map(match => match.matchday).filter(Boolean))].sort((a,b) => {
-        const numA = parseInt(a.toString().replace( /^\D+/g, ''));
-        const numB = parseInt(b.toString().replace( /^\D+/g, ''));
-        return numA - numB;
-    });
-
-    return { data: uniqueRounds, error: null };
 }
 
 export async function getMatchesByRound(leagueId: string, season: string, round: string) {
@@ -343,7 +358,7 @@ export async function getMatchesByRound(leagueId: string, season: string, round:
         }
         
         return { data: enrichedMatches, error: null };
-    } catch (e) {
+    } catch (e: any) {
         console.error('Unexpected error in getMatchesByRound:', e);
         return { data: null, error: `An unexpected error occurred: ${e.message}` };
     }

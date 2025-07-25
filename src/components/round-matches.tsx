@@ -47,9 +47,9 @@ export function RoundMatches() {
       setLoading(prev => ({ ...prev, countries: true }));
       setError(null);
       const result = await getCountries();
-      if (result.error) {
+      if (result && result.error) {
         setError(result.error);
-      } else if (result.data) {
+      } else if (result && result.data) {
         setCountries(result.data);
       }
       setLoading(prev => ({ ...prev, countries: false }));
@@ -70,9 +70,9 @@ export function RoundMatches() {
 
     setLoading(prev => ({ ...prev, leagues: true }));
     const result = await getLeaguesByCountry(countryId);
-    if (result.error) {
+    if (result && result.error) {
       setError(result.error);
-    } else if (result.data) {
+    } else if (result && result.data) {
       setLeagues(result.data as League[]);
     }
     setLoading(prev => ({ ...prev, leagues: false }));
@@ -92,9 +92,9 @@ export function RoundMatches() {
     
     setLoading(prev => ({ ...prev, rounds: true }));
     const result = await getRoundsForLeague(leagueData.league_id, leagueData.season);
-    if (result.error) {
+    if (result && result.error) {
       setError(result.error);
-    } else if (result.data) {
+    } else if (result && result.data) {
       setRounds(result.data as string[]);
     }
     setLoading(prev => ({ ...prev, rounds: false }));
@@ -112,10 +112,10 @@ export function RoundMatches() {
     
     setLoading(prev => ({ ...prev, matches: true }));
     const result = await getMatchesByRound(leagueData.league_id, leagueData.season, round);
-    if (result.error) {
+    if (result && result.error) {
       setError(result.error);
       setMatches([]);
-    } else if (result.data) {
+    } else if (result && result.data) {
       setMatches(result.data);
     }
     setLoading(prev => ({ ...prev, matches: false }));

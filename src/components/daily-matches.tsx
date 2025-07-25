@@ -33,9 +33,9 @@ export function DailyMatches() {
 
     const result = await getMatchesByDate(startDate, endDate);
     
-    if (result?.error) {
+    if (result && result.error) {
       setError(result.error);
-    } else if (result?.data) {
+    } else if (result && result.data) {
       setMatches(result.data);
     } else {
       setError("No se pudieron cargar los partidos. Por favor, inténtelo de nuevo más tarde.");

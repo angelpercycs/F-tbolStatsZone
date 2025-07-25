@@ -283,7 +283,7 @@ export async function getMatchesByDate(startDate, endDate) {
         }
         
         return { data: enrichedMatches, error: null };
-    } catch (e) {
+    } catch (e: any) {
         console.error('Unexpected error in getMatchesByDate:', e);
         return { data: null, error: `An unexpected error occurred: ${e.message}` };
     }
