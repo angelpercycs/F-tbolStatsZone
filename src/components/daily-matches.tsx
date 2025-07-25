@@ -31,12 +31,14 @@ export function DailyMatches() {
     const startDate = startOfDay(date).toISOString();
     const endDate = endOfDay(date).toISOString();
 
-    // @ts-ignore
     const result = await getMatchesByDate(startDate, endDate);
-    if (result.error) {
+    
+    if (result?.error) {
       setError(result.error);
-    } else {
+    } else if (result?.data) {
       setMatches(result.data);
+    } else {
+      setError("No se pudieron cargar los partidos. Por favor, inténtelo de nuevo más tarde.");
     }
     setLoading(false);
   }, []);

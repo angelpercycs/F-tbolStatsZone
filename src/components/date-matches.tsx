@@ -16,7 +16,6 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 export function DateMatches() {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(false);
-  // @ts-ignore
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [showOnlyPredicted, setShowOnlyPredicted] = useState(false);
@@ -31,12 +30,14 @@ export function DateMatches() {
     const startDate = startOfDay(date).toISOString();
     const endDate = endOfDay(date).toISOString();
 
-    // @ts-ignore
     const result = await getMatchesByDate(startDate, endDate);
-    if (result.error) {
+
+    if (result?.error) {
       setError(result.error);
-    } else {
+    } else if (result?.data) {
       setMatches(result.data);
+    } else {
+        setError("No se pudieron cargar los partidos. Por favor, inténtelo de nuevo más tarde.");
     }
     setLoading(false);
   }, []);
