@@ -13,7 +13,7 @@ This is a Next.js application built with Firebase Studio. It provides daily foot
 
 *   **Framework:** Next.js
 *   **UI:** React, ShadCN UI, Tailwind CSS 
-*   **AI:** Genkit
+*   **AI:** Genkit 
 *   **Database:** Supabase
 
 ## Repository
