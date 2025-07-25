@@ -12,7 +12,7 @@ This is a Next.js application built with Firebase Studio. It provides daily foot
 ## Tech Stack
 
 *   **Framework:** Next.js
-*   **UI:** React, ShadCN UI, Tailwind CSS
+*   **UI:** React, ShadCN UI, Tailwind CSS 
 *   **AI:** Genkit
 *   **Database:** Supabase
 
