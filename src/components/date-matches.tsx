@@ -36,7 +36,7 @@ export function DateMatches() {
       setError(result.error);
     } else if (result && result.data) {
       setMatches(result.data);
-    } else {
+    } else if (!result) {
         setError("No se pudieron cargar los partidos. Por favor, inténtelo de nuevo más tarde.");
     }
     setLoading(false);
