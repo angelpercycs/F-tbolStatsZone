@@ -18,7 +18,7 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Image src="/icon.svg" alt="Fútbol Stats Zone Logo" width={28} height={28} className="h-7 w-7" />
-                <span className="text-xl font-bold text-accent-foreground/90">Fútbol Stats Zone</span>
+                <span className="text-xl font-bold text-accent-foreground/90">Fútbol Stats Zone <span className="text-xs font-medium text-primary">Beta</span></span>
               </div>
             </div>
           </div>
