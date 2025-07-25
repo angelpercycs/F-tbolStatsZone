@@ -49,7 +49,10 @@ export default function Home() {
       
       <footer className="py-4 border-t">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Fútbol Stats Zone. All rights reserved.
+              © {new Date().getFullYear()} Fútbol Stats Zone. {" "}
+              <a href="https://github.com/angelpercycs/F-tbolStatsZone" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+                View on GitHub
+              </a>
           </div>
       </footer>
     </div>
