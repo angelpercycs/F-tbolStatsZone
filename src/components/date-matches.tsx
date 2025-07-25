@@ -32,11 +32,11 @@ export function DateMatches() {
 
     const result = await getMatchesByDate(startDate, endDate);
 
-    if (result && result.error) {
+    if (result?.error) {
       setError(result.error);
-    } else if (result && result.data) {
+    } else if (result?.data) {
       setMatches(result.data);
-    } else if (!result) {
+    } else {
         setError("No se pudieron cargar los partidos. Por favor, inténtelo de nuevo más tarde.");
     }
     setLoading(false);
